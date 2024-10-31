@@ -5,16 +5,23 @@ import java.util.Scanner;
 
 public class MyScan {
 		public static void main(String[] args) {
-				Scanner scan = new Scanner(System.in);
-				System.out.print("Name:");
-				String name = scan.nextLine();
-				System.out.print("Age:");
-				int age = scan.nextInt();
-				System.out.print("Addr:");
-				String addr = scan.nextLine();
-				System.out.print("Height:");
-				float height = scan.nextFloat();
+				//Scanner scan = scanUserInfo();
+				scanTemp();
 
-				System.out.printf("name is %s, addr is %s, age is %d years old, height is %f", name, addr, age, height);
+		}
+
+		private static void scanTemp() {
+				final double currTemp = 20;//변하지 않는 수온의 값
+				Scanner scan = new Scanner(System.in);
+				System.out.println("수심을 입력하시오 :");
+				double dept = scan.nextDouble();
+				double resultTemp = currTemp - Math.floor((double)dept / 10) * 0.7;
+				System.out.println(resultTemp);
+
+		}
+
+		private static Scanner scanUserInfo() {
+				Scanner scan = new Scanner(System.in);
+				return scan;
 		}
 }
