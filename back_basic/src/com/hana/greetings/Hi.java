@@ -1,30 +1,46 @@
 package com.hana.greetings;
 
-import org.w3c.dom.ls.LSOutput;
-
-import com.sun.source.tree.SwitchTree;
+import java.util.Scanner;
 
 public class Hi {
 		public static void main(String[] args) {
-				playSwitch();
+				studentsScore();
 		}
 
-		private static void playSwitch() {
+		private static void studentsScore() {
+				Scanner scan = new Scanner(System.in);
+				System.out.println("학생 수를 입력하세요 :");
+				int students = scan.nextInt();
+				int[] scores = new int[students];
 
-				int score = System.currentTimeMillis() % 2 == 0 ? 81 : 70;
-				final String grade = score > 80 ? "A" : "C";
-				switch (grade) {
-						case "A":
-								System.out.println('1');
-								break;
-						case "B":
-								System.out.println('2');
-								break;
-						case "C":
-								System.out.println('3');
-								break;
-						default:
-								System.out.println("defalut!!");
+				for (int score : scores) {
+						String grade;
+						if (score >= 90) {
+								grade = "A";
+						} else if (score >= 80) {
+								grade = "B";
+						} else if (score >= 70) {
+								grade = "C";
+						} else if (score >= 60) {
+								grade = "D";
+						} else {
+								grade = "F";
+						}
+
+						for (int i = 0; i < scores.length; i++) {
+								System.out.println(i + "번 학생의 점수를 입력하세요");
+								scores[i] = scan.nextInt();
+						}
+
+						System.out.println(students + "명의 학생 성적은 다음과 같습니다.");
+
+						for (int i = 0; i < scores.length; i++) {
+								System.out.println(i + "번 학생의 점수: " + scores[i]);
+						}
+						for (int s : scores) {
+								System.out.println(scores[s] + "번 학생의 등급은" + grade + "입니다.");
+
+						}
 				}
 		}
 }
