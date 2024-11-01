@@ -1,16 +1,30 @@
-public class Main {
-		public static void main(String[] args) {//main 메서드
-				if (args.length == 2) {//두개의 인자가 전달 되었는가?
-						int i = Integer.parseInt((args[1]));//두번째 인자를 정수로 변환해 반복횟수 설정
-						nPrintln(args[0], i);//0번쨰 인자와 함께 nPrintln메서드 호출
-				} else {                            //인자가 두개가 아닐 경우.
-						System.out.println("입력 정보 오류!");
-				}
-		}
+import java.util.Scanner;
 
-		public static void nPrintln(String s, int n) {
-				for (int i = 0; i < n; i++) {
-						System.out.println(s);
-				}
-		}
+public class Main {
+    //두 개의 인자를 받아 첫번째 인자를 지정한 횟수만큼 출력.
+    //1. 문자열과 반복횟수(int)를 입력받는다.
+    //2. i에 입력받은 반복횟수를 넣는다.
+    public static void main(String[] args) {
+        Scanner scan = new Scanner(System.in);
+
+        System.out.print("출력할 문자열을 입력하세요: ");
+        String printText = scan.nextLine();
+        System.out.print("문자열을 몇 번 입력할까요?: ");
+        int printCount = scan.nextInt();
+
+        int i = 0;
+        try {
+            i = printCount;
+        } catch (NumberFormatException e) {
+            System.out.println("??");
+        }
+        nPrintln(printText, i);
+    }
+
+    //문자열과 횟수를 입력받아 문자열을 횟수만큼 출력해주는 함수.
+    public static void nPrintln(String s, int n) {
+        for (int i = 0; i < n; i++) {
+            System.out.println(s);
+        }
+    }
 }
