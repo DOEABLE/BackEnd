@@ -16,7 +16,7 @@ public class Account {
 		private double balance;
 
 		//[계좌 생성]예금주 명만 입력받아서 무작위의 계좌번호와 초기잔액 0을 설정한다.
-		public Account(String accountOwner) {
+		public Account(long accountNo, String accountOwner) {
 				this((long)(Math.random() * 1000000000), accountOwner, 0);
 		}
 
@@ -68,11 +68,11 @@ public class Account {
 				}
 
 				//각 계좌에 대한 입,출,송금 실행
-				//System.out.println("\n[입금테스트]");
-				//accounts[0].deposit();
-				//
-				//System.out.println("\n[출금테스트]");
-				//accounts[1].withdraw();
+				System.out.println("\n[입금테스트] 입금액을 입력하세요: ");
+				accounts[0].deposit(scan.nextInt());
+
+				System.out.println("\n[출금테스트]");
+				accounts[1].withdraw();
 
 				System.out.println("\n[송금테스트]");
 				accounts[3].transfer(accounts[2]);//todo 결과창 금액 안맞음 -> 결과 금액이 안맞으면 transaction으로 돌리기.
