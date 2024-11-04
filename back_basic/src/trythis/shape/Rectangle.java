@@ -44,7 +44,8 @@ public class Rectangle {
 		}
 
 		public String toString() {
-				return "Rectangle[length=%s,width=%s]의 둘레는 %f, 면적은 %.2f".formatted(this.length, this.width, this.getPerimeter(),
+				return "Rectangle[length=%f,width=%.1f]의 둘레는 %f, 면적은 %.2f".formatted(this.length, this.width,
+						this.getPerimeter(),
 						this.getArea());
 		}
 

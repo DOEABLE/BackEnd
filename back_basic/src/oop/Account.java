@@ -10,99 +10,140 @@ import java.util.Scanner;
  * last: 입금(금액 입력 받기), 출금, display 순으로 출력.
  */
 public class Account {
-    private static Scanner scan = new Scanner(System.in);
-    private final double accountNo;
-    private final String accountOwner;
-    private double balance;
-    //alt + insert -> constructor
+		private static Scanner scan = new Scanner(System.in);
+		private final long accountNo;
+		private final String accountOwner;
+		private double balance;
 
+		//[계좌 생성]예금주 명만 입력받아서 무작위의 계좌번호와 초기잔액 0을 설정한다.
+		public Account(String accountOwner) {
+				this((long)(Math.random() * 1000000000), accountOwner, 0);
+		}
 
-    public Account(double accountNo, String accountOwner, double balance) {
-        this.accountNo = accountNo;
-        this.accountOwner = accountOwner;
-        this.balance = balance;
-    }
+		public Account(long accountNo, String accountOwner, double balance) {
+				this.accountNo = accountNo;
+				this.accountOwner = accountOwner;
+				this.balance = balance;
+		}
 
-    public static void main(String[] args) {
-        //계좌 정보 입력 및 인스턴스생성
-        System.out.print("계좌번호 입력: ");
-        double accountNo = scan.nextDouble();
-        scan.nextLine();
-        System.out.print("예금주 명: ");
-        String accountOwner = scan.nextLine();
-        System.out.print("잔액: ");
-        double balance = scan.nextDouble();
+		//[S]
+		// Account account = new Account(accountNo, accountOwner, balance);
+		//
+		// //거래유형(입금:+, 출금:-) 선택 마지막에 거래결과
+		// while (true) {
+		// 		System.out.print("어떤 거래를 하시겠어요?(입금:+, 출금:-): ");
+		// 		char transferType = scan.next().charAt(0);
+		//
+		// 		if (transferType == '+') {
+		// 				account.deposit();
+		// 				break;
+		// 		} else if (transferType == '-') {
+		// 				account.withdraw();
+		// 				break;
+		// 		} else {
+		// 				System.out.println("+와, -중 입력해주세요.(입금:+, 출금:-)");
+		// 		}
+		// }
+		// account.display();
+		//[E]
+		public static void main(String[] args) {
+				//계좌 정보 입력 및 인스턴스생성
+				System.out.print("계좌번호 입력: ");
+				long accountNo = scan.nextLong();
+				scan.nextLine();
+				System.out.print("예금주 명: ");
+				String accountOwner = scan.nextLine();
+				System.out.print("잔액: ");
+				double balance = scan.nextDouble();
 
-        Account account = new Account(accountNo, accountOwner, balance);
+				System.out.println("송금테스트========================");
+				Account[] accounts = {
+						new Account(12345, "코난", 10000),
+						new Account(54323, "미란", 20000),
+						new Account(4234 - 222, "장미", 30000),
+						new Account(accountNo, accountOwner, balance)
+				};
+				for (Account account : accounts) {
+						account.display();
+				}
 
-        //거래유형(입금:+, 출금:-) 선택 마지막에 거래결과
-        while (true) {
-            System.out.print("어떤 거래를 하시겠어요?(입금:+, 출금:-): ");
-            char transferType = scan.next().charAt(0);
+				//각 계좌에 대한 입,출,송금 실행
+				//System.out.println("\n[입금테스트]");
+				//accounts[0].deposit();
+				//
+				//System.out.println("\n[출금테스트]");
+				//accounts[1].withdraw();
 
+				System.out.println("\n[송금테스트]");
+				accounts[3].transfer(accounts[2]);//todo 결과창 금액 안맞음 -> 결과 금액이 안맞으면 transaction으로 돌리기.
 
-            if (transferType == '+') {
-                account.deposit();
-                break;
-            } else if (transferType == '-') {
-                account.withdraw();
-                break;
-            } else {
-                System.out.println("+와, -중 입력해주세요.(입금:+, 출금:-)");
-                //거래유형이 옳지 않다면 다시 입력받도록 하고싶어.
-            }
-        }
-        account.display();
-    }
+				System.out.println("\n최종 계좌 정보");
+				for (Account account : accounts) {
+						account.display();
+				}
 
+		}
 
-    public void checkBalance() {//잔액이 거래하기에 유효한지 잔액확인
-        if (balance > 0) {
-            System.out.printf("%s님의 잔액은 %.1f원 입니다.\n", this.accountOwner, this.balance);
-        } else {
-            System.out.println("잔액을 확인하세요!");
-        }
-    }
+		public void checkBalance() {//잔액이 거래하기에 유효한지 잔액확인
+				if (balance > 0) {
+						System.out.printf("%s님의 잔액은 %.1f원 입니다.\n", this.accountOwner, this.balance);
+				} else {
+						System.out.println("잔액을 확인하세요!");
+				}
+		}
 
-    public void deposit() {//입금내역 매서드
-        //todo (거래금액 분리)
-        //System.out.printf("입금액을 입력하세요: ");
-        //int amount = scan.nextInt();
-        int amount = getAmount("입금액을 입력하세요: ");
-        this.balance += amount;
-        System.out.printf("%d원이 입금되었습니다.\n", amount);
-        checkBalance();
+		public void deposit(int amount) {//입금내역 매서드
+				//todo (거래금액 분리)
+				//System.out.printf("입금액을 입력하세요: ");
+				//int amount = scan.nextInt();
+				//int amount = getAmount("입금액을 입력하세요: ");
+				this.balance += amount;
+				System.out.printf("%d원이 입금되었습니다.\n", amount);
+				checkBalance();
 
-    }
+		}
 
-    public void withdraw() {// 1. 출금액 입력받기 출금매서드(잔액보다 출금금액이 크면 출금안돼.) 항상 거래후엔 checkBalance
-        int amount = getAmount("출금액을 입력하세요: ");
-        if (this.balance >= amount) {
-            this.balance -= amount;
-            System.out.printf("%d원이 출금되었습니다. \n잔액:%.0f원\n", amount, this.balance);
-            this.checkBalance();
-        } else {
-            System.out.printf("출금 금액이 부족합니다.\n 잔액: %.0f원\n", this.balance);
-        }
+		public void withdraw() {//항상 거래후엔 checkBalance
+				int amount = getAmount("출금액을 입력하세요: ");
+				if (this.balance >= amount) {
+						this.balance -= amount;
+						System.out.printf("%d원이 출금되었습니다. \n잔액:%.0f원\n", amount, this.balance);
+						this.checkBalance();
+				} else {
+						System.out.printf("출금 금액이 부족합니다.\n 잔액: %.0f원\n", this.balance);
+				}
 
-    }
+		}
 
-    private int getAmount(String prompt) {
-        System.out.print(prompt);
-        return scan.nextInt();
-    }
+		private int getAmount(String prompt) {
+				System.out.print(prompt);
+				return scan.nextInt();
+		}
 
-    //display output 변수 출력 -> text blocks이용해 멀티라인 만들기.
-    public void display() {
-        String output = """
-                -----------------------------
-                계좌번호:%.0f
-                예금주:%s
-                잔액: %.1f
-                -----------------------------
-                """.formatted(this.accountNo, this.accountOwner, this.balance);
-//        final int dashCnt = 20;
-//        System.out.println("-".repeat(dashCnt));
-        System.out.println(output);
-    }
+		//new[s]
+		public void transfer(Account recipient) {
+				int amount = getAmount("송금액을 입력하시오: ");
+				if (this.balance >= amount) {
+						this.balance -= amount;
+						System.out.printf("%s님에게 %d원이 송금되었습니다.\n", recipient.accountOwner, amount);
+						checkBalance();
+						recipient.deposit(amount);
+				} else {
+						System.out.println("금액이 부족하여 송금실패.");
+				}
+		}
+
+		//display output 변수 출력 -> text blocks이용해 멀티라인 만들기.
+		public void display() {
+				String output = """
+						-----------------------------
+						계좌번호:%d
+						예금주:%s
+						잔액: %.1f
+						-----------------------------
+						""".formatted(this.accountNo, this.accountOwner, this.balance);
+				//        final int dashCnt = 20;
+				//        System.out.println("-".repeat(dashCnt));
+				System.out.println(output);
+		}
 }
