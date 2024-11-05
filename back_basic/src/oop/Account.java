@@ -92,9 +92,9 @@ public class Account {
 						System.out.printf("%d번 계좌:\n", i + 1);
 						accounts[i].display();
 				}
-				for (Account account : accounts) {
-						account.display();
-				}
+				// for (Account account : accounts) {
+				// 		account.display();
+				// }
 
 				System.out.print("송금계좌: ");
 				int senderIndex = scan.nextInt() - 1;
@@ -183,7 +183,7 @@ public class Account {
 				int amount = getAmount("송금액을 입력하시오: ");
 				if (this.balance >= amount) {
 						this.balance -= amount;
-						System.out.printf("%s님에게 %d원이 송금되었습니다.\n", recipient.accountOwner, amount);
+						System.out.printf("%s님의 계좌에서 %s님에게 %d원이 송금되었습니다.\n", this.accountOwner, recipient.accountOwner, amount);
 						checkBalance();
 						recipient.deposit(amount);
 				} else {
