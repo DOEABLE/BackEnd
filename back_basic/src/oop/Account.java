@@ -26,6 +26,29 @@ public class Account {
 				this.balance = balance;
 		}
 
+		//new[s]
+		public static void showSelectAccounts(Account[] accounts) {
+				showSelectAccounts(accounts, null);
+		}
+
+		public static void showSelectAccounts(Account[] accounts, Account me) {
+				StringBuilder msg = new StringBuilder();
+				for (Account acc : accounts) {
+						long no = acc.getAccountNo();
+						if (me != null && no == me.getAccountNo()) {
+								continue;
+						}
+						String owner = acc.getAccountOwner();
+						if (msg.isEmpty()) {
+								msg.append("(%d:%s".formatted(no, owner));
+						} else {
+								msg.append(",%d:%s".formatted(no, owner));
+						}
+				}
+				msg.append("): ");
+		}
+
+		//new[e]
 		//[S]
 		// Account account = new Account(accountNo, accountOwner, balance);
 		//
@@ -63,10 +86,34 @@ public class Account {
 						new Account(4234 - 222, "장미", 30000),
 						new Account(accountNo, accountOwner, balance)
 				};
+
+				// 각 계좌에 일련번호 부여 후 출력
+				for (int i = 0; i < accounts.length; i++) {
+						System.out.printf("%d번 계좌:\n", i + 1);
+						accounts[i].display();
+				}
 				for (Account account : accounts) {
 						account.display();
 				}
 
+				System.out.print("송금계좌: ");
+				int senderIndex = scan.nextInt() - 1;
+				System.out.print("수신계좌: ");
+				int recipientIndex = scan.nextInt() - 1;
+
+				//선택한 인덱스를 통해 송금자, 수신자 설정
+				if (senderIndex >= 0 && senderIndex < accounts.length && recipientIndex >= 0
+						&& recipientIndex < accounts.length) {
+						Account sender = accounts[senderIndex];
+						Account recipient = accounts[recipientIndex];
+						try {
+								sender.transfer(recipient);//송금시도
+						} catch (AccountException e) {
+								System.out.println("송금 실패: " + e.getMessage());
+						}
+				} else {
+						System.out.println("잘못된 계좌 번호를 입력했습니다.");//[todo] 예외처리
+				}
 				//각 계좌에 대한 입,출,송금 실행
 				System.out.println("\n[입금테스트] 입금액을 입력하세요: ");
 				accounts[0].deposit(scan.nextInt());
@@ -82,6 +129,18 @@ public class Account {
 						account.display();
 				}
 
+		}
+
+		public long getAccountNo() {
+				return accountNo;
+		}
+
+		public String getAccountOwner() {
+				return accountOwner;
+		}
+
+		public double getBalance() {
+				return balance;
 		}
 
 		public void checkBalance() {//잔액이 거래하기에 유효한지 잔액확인
@@ -110,7 +169,7 @@ public class Account {
 						System.out.printf("%d원이 출금되었습니다. \n잔액:%.0f원\n", amount, this.balance);
 						this.checkBalance();
 				} else {
-						System.out.printf("출금 금액이 부족합니다.\n 잔액: %.0f원\n", this.balance);
+						throw new AccountException("출금 금액이 부족합니다. 현재 잔액: " + this.balance + "원");
 				}
 
 		}
@@ -120,7 +179,6 @@ public class Account {
 				return scan.nextInt();
 		}
 
-		//new[s]
 		public void transfer(Account recipient) {
 				int amount = getAmount("송금액을 입력하시오: ");
 				if (this.balance >= amount) {
@@ -129,7 +187,7 @@ public class Account {
 						checkBalance();
 						recipient.deposit(amount);
 				} else {
-						System.out.println("금액이 부족하여 송금실패.");
+						throw new AccountException("금액이 부족하여 송금실패. 현재 잔액: " + this.balance + "원");
 				}
 		}
 

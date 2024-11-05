@@ -1,21 +1,17 @@
 package trythis.shape;
 
-public class Rectangle {
+public class Rectangle extends Shape {
 
 		private double length;
 		private double width;
 
-		public Rectangle() {
-				this(1, 1);//이렇게 하면 인자있는 생성자에 접근할 수 있다.
-
-				this.length = 1.0;//초기화
-				this.width = 1.0;
-
-		}
-
 		public Rectangle(double length, double width) {
 				this.length = length;
 				this.width = width;
+		}
+
+		public Rectangle() {
+				this(1, 1);//이렇게 하면 인자있는 생성자에 접근할 수 있다.
 		}
 
 		public double getLength() {
@@ -39,8 +35,12 @@ public class Rectangle {
 		}
 
 		public double getPerimeter() {
-				return (this.length + this.width) * 2;
+				return this.length * 2 + this.width * 2;
 
+		}
+
+		double calArea() {
+				return width * length;
 		}
 
 		public String toString() {
