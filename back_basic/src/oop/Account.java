@@ -48,7 +48,7 @@ public class Account {
         msg.append("): ");
     }
 
-    public static void main(String[] args) throws NotEnoughException {
+    public static void main(String[] args) {
         //계좌 정보 입력 및 인스턴스생성
         System.out.print("계좌번호 입력: ");
         long accountNo = scan.nextLong();
@@ -86,39 +86,49 @@ public class Account {
             System.out.print("어떤 거래를 하시겠어요?\n(입금:+, 출금:-, 송금:$): ");
             char transferType = scan.next().charAt(0);
 
-            if (transferType == '+') {
-                System.out.printf("\n입금계좌를 선택하세요.\n(1~%d번까지의 계좌가 존재합니다): ", accounts.length);
-                int depositIndex = scan.nextInt() - 1;//[todo] 매 거래마다 반복되는 scan.nextInt()-1
-                accounts[depositIndex].deposit(scan.nextInt());
-                break;
-            } else if (transferType == '-') {
-                System.out.printf("\n출금계좌를 선택하세요.\n(1~%d번까지의 계좌가 존재합니다): ", accounts.length);
-                int withdrawIndex = scan.nextInt() - 1;//todo
-                accounts[withdrawIndex].withdraw();
-                break;
-            } else if (transferType == '$') {
-                System.out.printf("송금계좌를 선택하세요.\n(1~%d번까지의 계좌가 존재합니다): ", accounts.length);
-                int senderIndex = scan.nextInt() - 1;
-                System.out.print("수신계좌: ");
-                int recipientIndex = scan.nextInt() - 1;
 
-                //선택한 인덱스를 통해 송금자, 수신자 설정
-                if (senderIndex >= 0 && senderIndex < accounts.length && recipientIndex >= 0
-                        && recipientIndex < accounts.length) {
-                    Account sender = accounts[senderIndex];
-                    Account recipient = accounts[recipientIndex];
-                    try {
-                        sender.transfer(recipient);
-                    } catch (AccountException e) {
-                        System.out.println("송금 실패: " + e.getMessage());
+            try {
+                if (transferType == '+') {
+                    System.out.printf("\n입금계좌를 선택하세요.\n(1~%d번까지의 계좌가 존재합니다): ", accounts.length);
+                    int depositIndex = scan.nextInt() - 1;//[todo] 매 거래마다 반복되는 scan.nextInt()-1
+                    accounts[depositIndex].deposit(scan.nextInt());
+                    break;
+                } else if (transferType == '-') {
+                    System.out.printf("\n출금계좌를 선택하세요.\n(1~%d번까지의 계좌가 존재합니다): ", accounts.length);
+                    int withdrawIndex = scan.nextInt() - 1;//todo
+//                    try {
+                    accounts[withdrawIndex].withdraw();
+//                    } catch (NotEnoughException e) {
+//                        throw new RuntimeException(e);
+//                    }
+                    break;
+                } else if (transferType == '$') {
+                    System.out.printf("송금계좌를 선택하세요.\n(1~%d번까지의 계좌가 존재합니다): ", accounts.length);
+                    int senderIndex = scan.nextInt() - 1;
+                    System.out.print("수신계좌: ");
+                    int recipientIndex = scan.nextInt() - 1;
+
+                    //선택한 인덱스를 통해 송금자, 수신자 설정
+                    if (senderIndex >= 0 && senderIndex < accounts.length && recipientIndex >= 0
+                            && recipientIndex < accounts.length) {
+                        Account sender = accounts[senderIndex];
+                        Account recipient = accounts[recipientIndex];
+                        try {
+                            sender.transfer(recipient);
+                        } catch (AccountException e) {
+                            System.out.println("송금 실패: " + e.getMessage());
+                        }
+                    } else {
+                        System.out.println("잘못된 계좌 번호를 입력했습니다.");//[todo] 예외처리
                     }
+                    break;
                 } else {
-                    System.out.println("잘못된 계좌 번호를 입력했습니다.");//[todo] 예외처리
+                    System.out.println("+와, -중 입력해주세요.(입금:+, 출금:-,송금:$)");
                 }
-                break;
-            } else {
-                System.out.println("+와, -중 입력해주세요.(입금:+, 출금:-,송금:$)");
+            } catch (NotEnoughException | AmountMinusException e) {
+                System.out.println(e.getMessage());
             }
+
         }
         // account.display();
         //[E]
@@ -127,6 +137,12 @@ public class Account {
             account.display();
         }
 
+    }
+
+    public void action() {
+        if (isNotValidScan()) {
+            return;
+        }
     }
 
     public void login() {
@@ -144,11 +160,6 @@ public class Account {
         this.display();
     }
 
-    public void action() {
-        if (isNotValidScan()) {
-            return;
-        }
-    }
 
     private boolean isNotValidScan() {
         if (this.scan == null) {
@@ -187,11 +198,13 @@ public class Account {
         }
     }
 
-    public void deposit(int amount) {//입금내역 매서드
-        //todo (거래금액 분리)
+    public void deposit(int amount) throws AmountMinusException {//입금내역 매서드
         //System.out.printf("입금액을 입력하세요: ");
         //int amount = scan.nextInt();
         //int amount = getAmount("입금액을 입력하세요: ");
+        if (amount < 0) {
+            throw new AmountMinusException("Need plus number!!");
+        }
         this.balance += amount;
         System.out.printf("%s님의 계좌로 %d원이 입금되었습니다.\n", this.accountOwner, amount);
         checkBalance();
@@ -216,7 +229,8 @@ public class Account {
         return scan.nextInt();
     }
 
-    public void transfer(Account recipient) throws NotEnoughException {
+    //todo transfer try-catch문으로 바꾸고 main 간소화
+    public void transfer(Account recipient) throws NotEnoughException, AmountMinusException {
         int amount = getAmount("송금액을 입력하시오: ");
         if (this.balance >= amount) {
             this.balance -= amount;
