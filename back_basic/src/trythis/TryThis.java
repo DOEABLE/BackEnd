@@ -28,5 +28,9 @@ public class TryThis {
 
 				InvoiceItem invoiceItem = new InvoiceItem("item1", "pongpong", 5, 3000);
 				System.out.println("invoiceItem = " + invoiceItem);
+
+				//
+				System.out.println("=======p.273 연습문제=======");
+				
 		}
 }
