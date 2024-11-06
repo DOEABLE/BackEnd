@@ -25,7 +25,7 @@ public class ArrayedGeneralBook implements GeneralBook {
 				gb.add("Allan", "4444");
 				gb.print();
 				//Allan4444 \nKim3333\nRhee2222\nSam1111
-				System.out.println("현재 저장된 데이터의 크기 : " + gb.size(/*names*/)); //4
+				System.out.println("현재 저장된 데이터의 크기 : " + gb.size()); //4
 				gb.add("Alex", "5555");
 				System.out.println("현재 저장된 데이터의 크기 : " + gb.size()); //5
 				gb.print();  //Alex5555\nAllan4444\nKim3333\nRhee2222\nSam1111\n
