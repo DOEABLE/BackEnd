@@ -35,6 +35,16 @@ public class ArrayedGeneralBook implements GeneralBook {
 				gb.print();  //Allan4444\nKim3333\nRhee2222  String foundRecord = gb.get("Allan");  System.out.println(foundRecord); //4444
 		}
 
+		private void swap(int a, int b) {
+				String tmpName = names[a];
+				String tmpRecord = records[a];
+				names[a] = names[b];
+				records[a] = records[b];
+				names[b] = tmpName;
+				records[b] = tmpRecord;
+
+		}
+
 		/**
 		 * 추가 (add): 이름과 기록을 추가합니다.
 		 * 제거 (remove): 이름과 기록을 삭제합니다.
