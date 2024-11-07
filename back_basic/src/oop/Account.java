@@ -127,6 +127,8 @@ public class Account {
                 }
             } catch (NotEnoughException | AmountMinusException e) {
                 System.out.println(e.getMessage());
+            } catch (AccountException e) {
+                throw new RuntimeException(e);
             }
 
         }
