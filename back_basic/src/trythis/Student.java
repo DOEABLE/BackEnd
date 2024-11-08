@@ -35,7 +35,7 @@ public class Student {
 
 		public static void main(String[] args) {
 				Map<String, Student> map = new HashMap<>();
-				MyScanner scanner = new MyScanner();
+				MyScanner scanner = new MyScanner("학생정보를 입력합니다:");
 				System.out.println("이름, 아이디, 전화번호 순으로 입력하세요: \n");
 				while (true) {
 						StringTokenizer token = new StringTokenizer(scanner.next(""), " ");

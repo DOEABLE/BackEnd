@@ -7,7 +7,7 @@ import java.util.Scanner;
 public class MyScanner {
 		private final Scanner scanner;
 
-		public MyScanner() {
+		public MyScanner(String s) {
 				this(System.in);
 		}
 
@@ -16,7 +16,7 @@ public class MyScanner {
 		}
 
 		public static void main(String[] args) {
-				MyScanner scanner1 = new MyScanner();
+				MyScanner scanner1 = new MyScanner("학생정보를 입력합니다:");
 
 				scanner1.<Integer>next("xxx");
 		}

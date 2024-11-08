@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class CollectionsEx {
-		private static final String[] MOVIES = {"Transformer", "StarWars", "Matrix", "Terminator", "Avatar"};
+		public static final String[] MOVIES = {"Transformer", "StarWars", "Matrix", "Terminator", "Avatar"};
 
 		public static void main(String[] args) {
 				List<String> list = new LinkedList<>(Arrays.asList(MOVIES));
