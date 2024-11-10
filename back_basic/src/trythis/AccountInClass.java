@@ -1,7 +1,7 @@
 package trythis;
 
-import oop.AmountMinusException;
-import oop.NotEnoughException;
+import com.kimdohee.assignment.bank.AmountMinusException;
+import com.kimdohee.assignment.bank.NotEnoughException;
 
 import java.util.Scanner;
 

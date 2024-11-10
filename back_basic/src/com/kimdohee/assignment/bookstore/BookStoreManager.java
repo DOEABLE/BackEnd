@@ -1,4 +1,4 @@
-package exam;
+package com.kimdohee.assignment.bookstore;
 
 import java.util.ArrayList;
 import java.util.Date;

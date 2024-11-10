@@ -1,4 +1,4 @@
-package oop;
+package com.kimdohee.assignment.bank;
 
 public class NotEnoughException extends AccountException {
     public NotEnoughException() {

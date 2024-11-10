@@ -1,4 +1,4 @@
-package exam;
+package com.kimdohee.assignment.bookstore;
 
 public class BookStoreManagerTest {
     public static void main(String[] args) {
