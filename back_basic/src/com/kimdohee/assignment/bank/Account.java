@@ -44,7 +44,7 @@ public abstract class Account {
 
 		public void checkBalance() {//잔액이 거래하기에 유효한지 잔액확인
 				if (balance > 0) {
-						System.out.printf("%s님의 잔액은 %.1f원 입니다.\n\n", this.accountOwner, this.balance);
+						System.out.printf("%s님의 잔액은 %d원 입니다.\n\n", this.accountOwner, this.balance);
 				} else {
 						System.out.println("잔액을 확인하세요!");
 				}
@@ -60,7 +60,7 @@ public abstract class Account {
 						throw new AmountMinusException("입금 금액은 0보다 커야 합니다.");
 				}
 				this.balance += amount;
-				System.out.printf("%s님의 계좌로 %.0f원이 입금되었습니다.\n", this.accountOwner, amount);
+				System.out.printf("%s님의 %s통장에 %.0f원이 입금되었습니다.\n", this.accountOwner, this.accountName, amount);
 				checkBalance();
 		}
 

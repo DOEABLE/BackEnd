@@ -29,7 +29,10 @@ public class FreeDepositAccount extends Account {
 
 		@Override
 		public void transfer(Account toAccount, double amount) throws AccountException {
-				amount = getAmount("송금액을 입력하시오: ");
+
+				if (amount <= 0) {
+						throw new AmountMinusException("이체 금액은 0보다 커야 합니다!");
+				}
 				if (this.balance >= amount) {
 						withdraw(amount);
 						toAccount.deposit(amount);

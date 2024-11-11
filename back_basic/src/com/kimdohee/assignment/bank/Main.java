@@ -58,7 +58,6 @@ public class Main {
 												double withdrawAmount = scanner.nextDouble();
 												selectedAcc.withdraw(withdrawAmount);
 										} catch (NotEnoughException e) {
-												goBack();
 										} catch (AmountMinusException e) {
 												System.out.println(e.getMessage());//출금액은 0보다 커야합니다.
 										} catch (AccountException e) {
@@ -81,57 +80,61 @@ public class Main {
 														System.out.println("잘못된 선택입니다.");
 														continue;
 										}
-										System.out.println("송금액을 입력하세요: ");
-										double amount = scanner.nextDouble();
-										selectedAcc.transfer(targetAcc, amount);
+
+										System.out.printf("%s 통장에 보낼 금액은?  ", targetAcc.accountName);
+										double transferAmount = scanner.nextDouble();
+										selectedAcc.transfer(targetAcc, transferAmount);
 								} else if (operation == 'I') { // 정보 조회
 										System.out.println(selectedAcc.getAccountInfo());
 								} else {
 										break; // 뒤로가기 또는 종료 조건
 								}
-
-								//freeAcc.deposit(100000);
-								//freeAcc.withdraw(50000);
-
-								// 마이너스 통장 생성 및 테스//트
-
-								//minusAcc.withdraw(200000); // 마이너스 한도 없음
-
-								// 정기예금 생성 및 테스트 (출금 불가)
-
-								try {
-										fixedAcc.withdraw(1000000); // 정기예금에서 출금을 시도하면 오류 발생
-								} catch (UnsupportedOperationException e) {
-										System.out.println(e.getMessage());
-								}
-
-								try {
-										fixedAcc.transfer(minusAcc, 1000000); // 정기예금에서 이체를 시도하면 오류 발생
-								} catch (UnsupportedOperationException e) {
-										System.out.println(e.getMessage());
-								}
-
-								// 자유입출금 통장에서 마이너스 통장으로 이체 테스트
-								freeAcc.transfer(minusAcc, 30000);
-
-								System.out.println(freeAcc.getAccountInfo());
-								System.out.println(minusAcc.getAccountInfo());
 						}
 				}
 		}
+		//freeAcc.deposit(100000);
+		//freeAcc.withdraw(50000);
+
+		// 마이너스 통장 생성 및 테스//트
+
+		//minusAcc.withdraw(200000); // 마이너스 한도 없음
+
+		// 정기예금 생성 및 테스트 (출금 불가)
+
+		// 		try {
+		// 				fixedAcc.withdraw(1000000); // 정기예금에서 출금을 시도하면 오류 발생
+		// 		} catch (UnsupportedOperationException e) {
+		// 				System.out.println(e.getMessage());
+		// 		}
+		//
+		// 		try {
+		// 				fixedAcc.transfer(minusAcc, 1000000); // 정기예금에서 이체를 시도하면 오류 발생
+		// 		} catch (UnsupportedOperationException e) {
+		// 				System.out.println(e.getMessage());
+		// 		}
+		//
+		// 		// 자유입출금 통장에서 마이너스 통장으로 이체 테스트
+		// 		freeAcc.transfer(minusAcc, 30000);
+		//
+		// 		System.out.println(freeAcc.getAccountInfo());
+		// 		System.out.println(minusAcc.getAccountInfo());
+		// }
+		// 		}
+		// }
 
 		// 뒤로가기 기능 구현
-		private static void goBack() {
-				if (!navigationStack.isEmpty()) {
-						String previousPage = navigationStack.pop(); // 스택에서 이전 상태 꺼내기
-						System.out.println(previousPage + " 화면으로 돌아갑니다.");
-				} else {
-						System.out.println("더 이상 뒤로 갈 수 없습니다.");
-				}
-		}
+		// private static void goBack() {
+		// 		if (!navigationStack.isEmpty()) {
+		// 				String previousPage = navigationStack.pop(); // 스택에서 이전 상태 꺼내기
+		// 				System.out.println(previousPage + " 화면으로 돌아갑니다.");
+		// 		} else {
+		// 				System.out.println("더 이상 뒤로 갈 수 없습니다.");
+		// 		}
+		// }
+		//
+		// // 현재 위치를 스택에 저장하는 메서드
+		// private static void navigateTo(String pageName) {
+		// 		navigationStack.push(pageName);
+		// }
 
-		// 현재 위치를 스택에 저장하는 메서드
-		private static void navigateTo(String pageName) {
-				navigationStack.push(pageName);
-		}
 }
