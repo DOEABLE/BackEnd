@@ -6,27 +6,42 @@ import java.util.Stack;
 public class Main {
 		private static Stack<String> navigationStack = new Stack<>(); // 뒤로가기 스택
 
+		// 이전 단계로 돌아갈지 검사하는 메서드
+		static boolean isBackOrEmpty(String input) {
+				return input.equals("0") || input.isEmpty();
+		}
+
 		public static void main(String[] args) throws AccountException {
 				Scanner scanner = new Scanner(System.in);
 
 				// 자유입출금 통장 생성 및 테스트
-				//@formatter:off
-				FreeDepositAccount 	freeAcc 	= new FreeDepositAccount	(1, "홍길동");
-				FixedDepositAccount fixedAcc 	= new FixedDepositAccount	(2, "홍길동", 12, 2.0); // 만기 12개월, 금리 2%
-				MinusAccount 				minusAcc	= new MinusAccount				(3, "홍길동");
-				//@formatter:on
+				FreeDepositAccount freeAcc = new FreeDepositAccount(1, "홍길동");
+				FixedDepositAccount fixedAcc = new FixedDepositAccount(2, "홍길동", 12, 2.0); // 만기 12개월, 금리 2%
+				MinusAccount minusAcc = new MinusAccount(3, "홍길동");
 
-				Account[] accounts = {freeAcc, fixedAcc, minusAcc};
+				Account[] accounts = new Account[] {freeAcc, fixedAcc, minusAcc};
 				for (Account account : accounts) {
 						System.out.println(account.getAccountInfo());
 				}
 
 				while (true) {
 						System.out.print("\n>> 통장을 선택하세요(1: 자유입출금, 2: 정기예금, 3: 마이너스): ");
-						int choice = scanner.nextInt();
+						String input = scanner.nextLine().trim();
+						if (input.isEmpty()) {
+								System.out.println("금일 OneHanaBank는 영업을 종료합니다. 감사합니다.");
+								break;
+						} else if (isBackOrEmpty(input)) {
+								continue;
+						}
+
+						int choice;
+						try {
+								choice = Integer.parseInt(input);
+						} catch (NumberFormatException e) {
+								continue;
+						}
 
 						Account selectedAcc;
-
 						switch (choice) {
 								case 1:
 										selectedAcc = freeAcc;
@@ -41,100 +56,100 @@ public class Main {
 										System.out.println("잘못된 선택입니다.");
 										continue;
 						}
-
 						System.out.println(selectedAcc.getAccountInfo());
 
-						while (true) {
-								System.out.println("\n원하시는 업무는? (+:입금, -:출금, T:이체, I:계좌정보)");
-								char operation = scanner.next().charAt(0);
-
-								if (operation == '+') { // 입금
-										System.out.print("입금 하실 금액은? ");
-										double depositAmount = scanner.nextDouble();
-										selectedAcc.deposit(depositAmount);
-								} else if (operation == '-') { // 출금
-										try {
-												System.out.print("출금 하실 금액은? ");
-												double withdrawAmount = scanner.nextDouble();
-												selectedAcc.withdraw(withdrawAmount);
-										} catch (NotEnoughException e) {
-										} catch (AmountMinusException e) {
-												System.out.println(e.getMessage());//출금액은 0보다 커야합니다.
-										} catch (AccountException e) {
-												System.out.println("알 수 없는 오류: 영업점에 문의하세요." + e.getMessage());
-										}
-								} else if (operation == 'T') { // 이체
-										System.out.print("어디로 보낼까요? (2: 정기예금, 3: 마이너스): ");
-										int targetChoice = scanner.nextInt();
-
-										Account targetAcc;
-
-										switch (targetChoice) {
-												case 2:
-														targetAcc = fixedAcc;
-														break;
-												case 3:
-														targetAcc = minusAcc;
-														break;
-												default:
-														System.out.println("잘못된 선택입니다.");
-														continue;
-										}
-
-										System.out.printf("%s 통장에 보낼 금액은?  ", targetAcc.accountName);
-										double transferAmount = scanner.nextDouble();
-										selectedAcc.transfer(targetAcc, transferAmount);
-								} else if (operation == 'I') { // 정보 조회
-										System.out.println(selectedAcc.getAccountInfo());
+						// 여기에서 원하시는 업무를 한 번만 출력하도록 수정
+						boolean operationExit = false;
+						while (!operationExit) {
+								if (selectedAcc == fixedAcc) {
+										System.out.println("\n정기 예금이 만기되었습니다. (+:만기처리, -:출금, T:이체, I:계좌정보)");
 								} else {
-										break; // 뒤로가기 또는 종료 조건
+										System.out.println("\n원하시는 업무는? (+:입금, -:출금, T:이체, I:계좌정보)");
+								}
+
+								String operationInput = scanner.nextLine().trim();
+
+								if (!operationInput.isEmpty()) {
+										char operation = operationInput.charAt(0);
+										if (operation == '+') { // 입금
+												if (selectedAcc == fixedAcc) {
+														fixedAcc.processMaturity(accounts, operation);
+														break;
+												} else {
+														System.out.print("입금 하실 금액은? ");
+														long depositAmount = scanner.nextLong();
+														selectedAcc.deposit(depositAmount);
+														scanner.nextLine();
+												}
+										} else if (operation == '-') {
+												while (true) {
+														if (selectedAcc == fixedAcc) {
+																try {
+																		fixedAcc.processMaturity(accounts, operation);
+																} catch (FailTransactionException e) {
+																		break;
+																}
+																break;
+														} else {
+																try {
+																		System.out.print("출금 하실 금액은? ");
+																		String withdrawInput = scanner.next().trim();
+																		if (isBackOrEmpty(withdrawInput)) {
+																				break;
+																		}
+																		long withdrawAmount = Long.parseLong(withdrawInput);
+																		selectedAcc.withdraw(withdrawAmount);
+																} catch (NotEnoughException e) {
+																		e.getMessage();
+																		break;
+																}
+																break;
+														}
+												}
+										} else if (Character.toUpperCase(operation) == 'T') {
+												if (selectedAcc == fixedAcc) {
+														try {
+																fixedAcc.processMaturity(accounts, operation);
+														} catch (FailTransactionException e) {
+																continue;
+														}
+														break;
+												} else {
+														System.out.print("어디로 보낼까요? (2: 정기예금, 3: 마이너스): ");
+														int targetChoice = scanner.nextInt();
+
+														Account targetAcc;
+
+														switch (targetChoice) {
+																case 2:
+																		targetAcc = fixedAcc;
+																		break;
+																case 3:
+																		targetAcc = minusAcc;
+																		break;
+																default:
+																		System.out.println("잘못된 선택입니다.");
+																		continue;
+														}
+
+														while (true) {
+																try {
+																		System.out.printf("%s 통장에 보낼 금액은?  ", targetAcc.accountName);
+																		long transferAmount = scanner.nextLong();
+																		selectedAcc.transfer(targetAcc, transferAmount);
+																		break;
+																} catch (NotEnoughException e) {
+																		e.getMessage();
+																}
+														}
+												}
+										} else if (Character.toUpperCase(operation) == 'I') { // 정보 조회
+												System.out.println(selectedAcc.getAccountInfo());
+										} else {
+												operationExit = true; // 종료 조건
+										}
 								}
 						}
 				}
 		}
-		//freeAcc.deposit(100000);
-		//freeAcc.withdraw(50000);
-
-		// 마이너스 통장 생성 및 테스//트
-
-		//minusAcc.withdraw(200000); // 마이너스 한도 없음
-
-		// 정기예금 생성 및 테스트 (출금 불가)
-
-		// 		try {
-		// 				fixedAcc.withdraw(1000000); // 정기예금에서 출금을 시도하면 오류 발생
-		// 		} catch (UnsupportedOperationException e) {
-		// 				System.out.println(e.getMessage());
-		// 		}
-		//
-		// 		try {
-		// 				fixedAcc.transfer(minusAcc, 1000000); // 정기예금에서 이체를 시도하면 오류 발생
-		// 		} catch (UnsupportedOperationException e) {
-		// 				System.out.println(e.getMessage());
-		// 		}
-		//
-		// 		// 자유입출금 통장에서 마이너스 통장으로 이체 테스트
-		// 		freeAcc.transfer(minusAcc, 30000);
-		//
-		// 		System.out.println(freeAcc.getAccountInfo());
-		// 		System.out.println(minusAcc.getAccountInfo());
-		// }
-		// 		}
-		// }
-
-		// 뒤로가기 기능 구현
-		// private static void goBack() {
-		// 		if (!navigationStack.isEmpty()) {
-		// 				String previousPage = navigationStack.pop(); // 스택에서 이전 상태 꺼내기
-		// 				System.out.println(previousPage + " 화면으로 돌아갑니다.");
-		// 		} else {
-		// 				System.out.println("더 이상 뒤로 갈 수 없습니다.");
-		// 		}
-		// }
-		//
-		// // 현재 위치를 스택에 저장하는 메서드
-		// private static void navigateTo(String pageName) {
-		// 		navigationStack.push(pageName);
-		// }
-
 }
