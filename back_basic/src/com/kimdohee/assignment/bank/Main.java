@@ -11,8 +11,19 @@ public class Main {
 				return input.equals("0") || input.isEmpty();
 		}
 
+<<<<<<< Updated upstream
 		public static void main(String[] args) throws AccountException {
 				Scanner scanner = new Scanner(System.in);
+=======
+        Account[] accounts = {
+                new Account(12345, "코난", 10000),
+                new Account(54323, "미란", 20000),
+                new Account(4234 - 222, "장미", 30000),
+                // new Account(accountNo, accountOwner, balance)
+        };
+        // 자유입출금 통장 생성 및 테스트
+        FreeDepositAccount freeAcc = new FreeDepositAccount(1, "홍길동");
+>>>>>>> Stashed changes
 
 				// 자유입출금 통장 생성 및 테스트
 				FreeDepositAccount freeAcc = new FreeDepositAccount(1, "홍길동");
