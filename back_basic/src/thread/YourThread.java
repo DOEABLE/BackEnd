@@ -5,7 +5,8 @@ public class YourThread implements Runnable {
     @Override
     public void run() {
         System.out.println("YourThread Started...");
-        for (int i = 0; i < 5; i++) {
+        System.out.println(Thread.currentThread().getName());
+        for (int i = 1; i < 6; i++) {
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
