@@ -33,9 +33,9 @@ public class FreeAccount extends Account implements Transferable, Withdrawable {
 						if (amount == -1) {
 								choiceMenu();
 						}
-				} catch (InterruptedException e) {
+				} catch (InsufficentException e) {
 						System.out.printf("잔액이 부족합니다!(잔액: %d원)%n", balance);
-						withdraw();
+						//다시 Account클래스의 "%s에 보낼 금액은?" 을 묻도록 수정하고 싶어.
 				} catch (Exception e) {
 						System.out.println(e.getMessage());
 						withdraw();

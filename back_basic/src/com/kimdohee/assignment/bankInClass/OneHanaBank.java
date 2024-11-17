@@ -10,6 +10,8 @@ public class OneHanaBank {
 
 				try {
 						free.startMenu();
+						//free.choiceMenu();
+
 				} catch (Exception e) {
 						throw new RuntimeException(e);
 				}

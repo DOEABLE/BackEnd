@@ -27,13 +27,17 @@ public class Account {
 		}
 
 		public void setTransferTargetAccount(Account account) {
-				try {
-						int amount = scanInt("%s에 보낼 금액은?".formatted(account.accountName), 2);
-						this.withdraw(amount);
+				while (true) {
+						try {
+								int amount = scanInt("%s에 보낼 금액은?".formatted(account.accountName), 2);
+								this.withdraw(amount);
 
-						account.deposit(amount, false, this);
-				} catch (Exception e) {
-						throw new RuntimeException(e);
+								account.deposit(amount, false, this);
+						} catch (InsufficentException e) {
+								System.out.printf("잔액이 부족합니다!(잔액: %d원)%n", this.balance);
+						} catch (Exception e) {
+								throw new RuntimeException(e);
+						}
 				}
 		}
 
@@ -44,6 +48,16 @@ public class Account {
 		public void selectTransferTargetAccount(Transferable transfer) throws Exception {
 				int accId = scanInt("어디로 보낼까요? %s".formatted(exceptMe()), 2);
 				Account account = accounts.stream().filter(a -> a.getAccountNo() == accId).findFirst().orElse(null);
+				if (account == null) {
+						System.out.println("계좌를 정확히 선택해 주세요!");
+						selectTransferTargetAccount(transfer);
+				} else {
+						if (transfer == null) {
+								setTransferTargetAccount(account);
+						} else {
+								transfer.transfer(account);
+						}
+				}
 		}
 
 		public List<Account> exceptMe() {
@@ -77,8 +91,8 @@ public class Account {
 		}
 
 		public void withdraw(int amount) throws WithdrawNotSupportedException {
-				if (this instanceof Withdrawable) {
-						withdraw(amount);
+				if (this instanceof Withdrawable) {  // this객체가 Withdrawable 인터페이스를 구현했는지 확인.
+						withdraw(amount);                // 가능하다면 출금시도.
 				} else {
 						throw new WithdrawNotSupportedException();
 				}
@@ -86,8 +100,9 @@ public class Account {
 
 		public void transfer() throws TransferNotSupportedException {
 				try {
-						((Transferable)this).transfer(null);
-				} catch (ClassCastException e) {
+						((Transferable)this).transfer(null);// 현재 객체(this)를 Transferable 타입으로 강제 형변환(cast)하려고 시도
+						// Transferable 인터페이스 내에 transfer 메서드 호출
+				} catch (ClassCastException e) {                  // 만약 this 객체가 Transferable을 구현하지 않았다면, ClassCastException이 발생
 						throw new TransferNotSupportedException();
 				}
 		} // 이체 메서드도 각 계좌에서 오버라이딩
@@ -102,7 +117,7 @@ public class Account {
 		}
 
 		protected void printInfo(String balanceMsg) {
-				System.out.printf("%s (계좌번호: %s, 잔액:%d, 예금주:%s)%n", accountName, accountNo, balanceMsg, balance, accountOwner);
+				System.out.printf("%s (계좌번호: %s, %s:%d, 예금주:%s)%n", accountName, accountNo, balanceMsg, balance, accountOwner);
 		}
 
 		@Override
@@ -116,6 +131,7 @@ public class Account {
 						int accId = scanInt(msg, 0);
 						// accounts.stream().filter(a->a.getAccountId==accId).findFirst().ifPresent(this::setCurrentAccount);
 						Account account = accounts.stream().filter(a -> a.getAccountNo() == accId).findFirst().orElse(null);
+						account.choiceMenu();
 				} catch (Exception e) {
 						System.out.println("계좌번호를 정확히 입력하세요!");
 						startMenu();
